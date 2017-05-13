@@ -58,11 +58,12 @@ const settings = {
   },
   devServer: {
     contentBase: path.resolve("src/www"),
-    publicPath: "http://192.168.1.72:8080/", // full URL is necessary for Hot Module Replacement if additional path will be added.
+    publicPath: "0.0.0.0:8080/", // full URL is necessary for Hot Module Replacement if additional path will be added.
     quiet: false,
     hot: true,
     historyApiFallback: true,
-    inline: true
+    inline: true,
+    disableHostCheck: true
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
