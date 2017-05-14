@@ -10,7 +10,7 @@ import css from './App.css';
 import purbleBarTheme from './PurpleAppBar.css';
 import Label from './common/Label.js';
 import ColorPicker from './form/ColorPicker'
-
+import uid from 'uid';
 
   const labelStyle = { 
     fontFamily: 'Roboto', 
@@ -24,17 +24,60 @@ import ColorPicker from './form/ColorPicker'
   }, 
   labelStyle);
 
+import io from 'socket.io-client';
+
+
+
 class App extends Component {
     state = {
-        ready: false,
-        name: '',
-        selectedColor: ''
+        connected: false,       // connected to servr
+        ready: false,           // player is ready to join game
+        inputName: '',          // name input in field
+        inputColor: '', // color chosen
+        players: []             // all players in game
     }
+    playerUID = uid()
+    socket = null;
 
     constructor(props) {
     	super(props);
 
+
+        this.socket = io.connect(window.location.host.replace('8080', '3000'), { reconnect: true });
+        this.socket.on('connect', () => {
+            this.setState({
+                connected: true
+            })
+        });
+        this.socket.on('disconnect', () => {
+            this.setState({
+                connected: false
+            })
+        });
+
+        this.socket.on('playersChanged', (payload) => {
+            this.setState({
+                players: payload
+            })
+            console.log('playerschanged: ' + payload)
+        });
   	}
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.ready > prevState.ready) {
+            // Player clicked ready button
+            this.socket.emit('addPlayer', {
+                uid: this.playerUID,
+                name: this.state.inputName,
+                color: this.state.inputColor
+            });
+
+        }
+        if (this.state.ready < prevState.ready) {
+            // Player no longer ready, remove it
+            this.socket.emit('removePlayer', this.playerUID);
+        }
+    }
     
     handleReadyClick() {
         this.setState({
@@ -44,24 +87,29 @@ class App extends Component {
 
     handleNameChange(value) {
         this.setState({
-            name: value,
+            inputName: value,
             ready: false
         });
     }
 
     handleColorChange(value) {
         this.setState({
-            selectedColor: value,
+            inputColor: value,
             ready: false
         });
     }
 
     render() {
-        const canBeReady = this.state.name != '' &&
-            this.state.selectedColor != '';
+        const canBeReady = 
+            this.state.connected && 
+            this.state.inputName != '' &&
+            this.state.inputColor != '';
 
         return <div>
-            <AppBar title='Kurve2: Join game' theme={purbleBarTheme}/>
+            <AppBar title='Kurve2: Join game' 
+                theme={purbleBarTheme} 
+                rightIcon={ this.state.connected ? 'wifi' : null }
+            />
             <Box style={{ margin: '0 20px 0 20px' }}>
             <Box flex={.5}>
                 <Label style={ formLabelStyle }>
@@ -87,16 +135,21 @@ class App extends Component {
             </Box>
             <Box flex={1}>
                 <ColorPicker 
-                    selectedColor = { this.state.selectedColor }
+                    selectedColor = { this.state.inputColor }
                     onChange = { this.handleColorChange.bind(this) }
+                    players = { this.state.players }
                 />
             </Box>
             </Box>
             <Box style={{ margin: '0 20px 0 20px'  }}>
             <Box flex={1} >
-                <Label style={ labelStyle }>
-                tralala
-                </Label>
+                {
+                    this.state.connected ?
+                        <Label style={ labelStyle }>
+                        { this.state.players.length } player in game
+                        </Label>
+                    : null
+                }
             </Box>
             <Box>
                 <Button 

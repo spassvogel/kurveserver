@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import reactCSS from 'reactcss'
 
-export const ColorSwatch = ({ color, count, selected, style, onClick, title = color }) => {
-    this.state = { 
-        selected: false 
-    };
-    const size = `calc(${100 / count}% - 6px)`;
+export const ColorSwatch = ({ color, count, selected, disabled, style, onClick, title = color }) => {
+
+    const margin = 6;
+    const disabledBorderSize = 4;
+    const size = `calc(${100 / count}% - ${margin}px)`;
+    const disabedSize = `calc(${100 / count}% - ${margin}px - ${disabledBorderSize * 2}px)`;
+
     const styles = reactCSS({
         'default': {
             swatch: {
@@ -13,8 +15,7 @@ export const ColorSwatch = ({ color, count, selected, style, onClick, title = co
                 paddingBottom: size,
                 float: 'left',
                 borderRadius: '10px',
-                margin: '0 6px 6px 0',
-                //boxSizing: 'border-box',
+                marginLeft: `${margin}px`,
         
                 background: color,
                 cursor: 'pointer',
@@ -25,13 +26,23 @@ export const ColorSwatch = ({ color, count, selected, style, onClick, title = co
                 position: 'absolute'
             }
         },
+        'disabled': {
+            swatch: {
+                background: 'none',
+                width: disabedSize,
+                paddingBottom: disabedSize,
+                cursor: 'default',
+                // boxSizing: 'border-box',
+                border: `${disabledBorderSize}px solid ${color}`
+            }
+        },
         'custom': {
             swatch: style,
         },
-    }, 
-    'custom')
+    }, { 'disabled': disabled })
 
     const handleClick = (e) => onClick(color, e)
+    
 
     return (
         <div style={ styles.swatch } onClick={ handleClick } title={ title } >
@@ -44,6 +55,9 @@ export const ColorSwatch = ({ color, count, selected, style, onClick, title = co
             }
         </div>
   )
+}
+ColorSwatch.defaultProps = {
+	disabled: false
 }
 
 export default ColorSwatch
