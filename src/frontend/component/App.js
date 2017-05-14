@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Box from 'react-layout-components'
 import PurpleAppBar from './PurpleAppBar.js';      // AppBar with simple overrides
 import SuccessButton from './SuccessButton.js';    // A button with complex overrides
@@ -9,8 +9,8 @@ import AppBar from 'react-toolbox/lib/app_bar';
 import css from './App.css';
 import purbleBarTheme from './PurpleAppBar.css';
 import Label from './common/Label.js';
+import ColorPicker from './form/ColorPicker'
 
-const App = () => {
 
   const labelStyle = { 
     fontFamily: 'Roboto', 
@@ -24,33 +24,91 @@ const App = () => {
   }, 
   labelStyle);
 
-  return <div>
-    <AppBar title='Kurve2: Join game' theme={purbleBarTheme}/>
-    <Box style={{ margin: 20 }}>
-      <Box flex={.5}>
-        <Label style={ formLabelStyle }>
-          Name
-        </Label>
-      </Box>
-      <Box flex={1}>
-        <Input type='text' style={ labelStyle } name='name' maxLength={30} theme={inputTheme} />
-      </Box>
-    </Box>
-    <Box style={{ margin: 20 }}>
-      <Box flex={.5} >
-        <Label style={ formLabelStyle }>
-          Color
-        </Label>
-      </Box>
-      <Box flex={1}>
-        <Input type='text' name='name' maxLength={30} theme={inputTheme} />
-      </Box>
-    </Box>
-    <section style={{ padding: 20 }}>
-      <SuccessButton label='Success' primary raised />
-      <Button label='Primary Button' primary />
-    </section>
-  </div> 
+class App extends Component {
+    state = {
+        ready: false,
+        name: '',
+        selectedColor: ''
+    }
+
+    constructor(props) {
+    	super(props);
+
+  	}
+    
+    handleReadyClick() {
+        this.setState({
+            ready: !this.state.ready
+        })
+    }
+
+    handleNameChange(value) {
+        this.setState({
+            name: value,
+            ready: false
+        });
+    }
+
+    handleColorChange(value) {
+        this.setState({
+            selectedColor: value,
+            ready: false
+        });
+    }
+
+    render() {
+        const canBeReady = this.state.name != '' &&
+            this.state.selectedColor != '';
+
+        return <div>
+            <AppBar title='Kurve2: Join game' theme={purbleBarTheme}/>
+            <Box style={{ margin: '0 20px 0 20px' }}>
+            <Box flex={.5}>
+                <Label style={ formLabelStyle }>
+                Name
+                </Label>
+            </Box>
+            <Box flex={1}>
+                <Input 
+                    type='text' 
+                    style={ labelStyle } 
+                    name='name' 
+                    maxLength={30} 
+                    theme={inputTheme} 
+                    onChange = { this.handleNameChange.bind(this) }
+                />
+            </Box>
+            </Box>
+            <Box style={{ margin: '0 20px 0 20px'  }}>
+            <Box flex={.5} >
+                <Label style={ formLabelStyle }>
+                Color
+                </Label>
+            </Box>
+            <Box flex={1}>
+                <ColorPicker 
+                    selectedColor = { this.state.selectedColor }
+                    onChange = { this.handleColorChange.bind(this) }
+                />
+            </Box>
+            </Box>
+            <Box style={{ margin: '0 20px 0 20px'  }}>
+            <Box flex={1} >
+                <Label style={ labelStyle }>
+                tralala
+                </Label>
+            </Box>
+            <Box>
+                <Button 
+                    label='Ready' 
+                    disabled = { !canBeReady }
+                    icon = { this.state.ready ? 'done' : ''} 
+                    raised primary= { this.state.ready } 
+                    onClick={ this.handleReadyClick.bind(this) }/>
+            </Box>
+            </Box>
+        </div> 
+    }
 };
 
 export default App;
