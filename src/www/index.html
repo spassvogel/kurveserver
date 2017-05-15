@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>React Toolbox Example</title>
+    <title>Kurve2 client</title>
     <meta name="description" content="A set of complementary tools to ReactJS.">
     <meta name="author" content="React Toolbox team">
-    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)">
+    <!--<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)">-->
     <meta name="apple-mobile-web-app-title" content="Material Console">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,6 +25,19 @@
         display: -webkit-flex;
         display: flex;
       }
+
+      
+@media screen and (orientation:landscape) {
+
+  #container {
+    -ms-transform: rotate(-90deg); /* IE 9 */
+    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+    transform: rotate(-90deg);
+    width: 800px ;
+    height: 600px ;
+    overflow: scroll;
+  }
+}      
     </style>
   </head>
 

@@ -18,7 +18,7 @@ class ColorPicker extends Component {
 						color = { c }
 						count = { this.props.colors.length }
 						selected = { this.props.selectedColor == c }
-						disabled = { player !== null }
+						disabled = { this.props.selectedColor != c && player !== null }
 						title = { player !== null ? `${c} [${player.name}]` : c }
 			//              style={ styles.swatch }
 						onClick = { this.handleChange }

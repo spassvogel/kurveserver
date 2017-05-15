@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 
 const Label = (props) => {
 	const { children, ...other } = props;
-	return <p {...other}> 
+	return <span {...other}> 
 		{ children }
-	</p>;
+	</span>;
 };
 
 export default Label;
