@@ -1,15 +1,20 @@
-const merge = require('lodash.merge');
+import merge from 'lodash.merge';
+import express from 'express';
 
-
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+import http from 'http';
+import SocketIO from 'socket.io';
 
 const playerData = [];
 const CONTROL_LEFT_UP = 'leftUp';
 const CONTROL_LEFT_DOWN = 'leftDown';
 const CONTROL_RIGHT_UP = 'rightUp';
 const CONTROL_RIGHT_DOWN = 'rightDown';
+
+const app = express();
+const server = http.Server(app);
+const io = new SocketIO(server);
+const port = process.env.PORT || 3000;
+
 
 io.on('connection', function(socket){
     let playerUID = null;
@@ -74,7 +79,7 @@ function removePlayer(playerUID) {
 }
 
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+server.listen(port, function(){
+  console.log('listening on *:' + port);
 });
 

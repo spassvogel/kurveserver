@@ -188,6 +188,7 @@
     "spaced-line-comment": [0, "always"],
     "strict": [1],
     "use-isnan": [2],
+    "use-spaces": [0],
     "valid-jsdoc": [0],
     "valid-typeof": [2],
     "vars-on-top": [0],
