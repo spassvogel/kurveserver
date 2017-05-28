@@ -6,9 +6,19 @@ const START_POS_MARGIN = 20;	// Player can never start in this area around the e
 
 const canvas = document.getElementById('canvas');
 const stage = new createjs.Stage(canvas);
+
+
 const gameAreaWidth = canvas.width;
 const gameAreaHeight = canvas.height;
 let gameArea;
+
+
+stage.addEventListener("stagemousedown", handleMouseDown);
+function handleMouseDown(event) {
+     var p = gameArea.globalToLocal(stage.mouseX, stage.mouseY);
+     var hit = gameArea.hitTest(p.x, p.y);
+	 console.log(hit)
+}
 
 const player1 = new Player({
 	color: "#88aaEE"
@@ -35,9 +45,9 @@ const start = () => {
 	});
 
 	gameArea = new createjs.Shape();
-	gameArea.graphics
-		.beginFill("#000")
-		.drawRect(0, 0, gameAreaWidth, gameAreaHeight);
+	//gameArea.graphics
+	//	.beginFill("#000")
+	//	.drawRect(0, 0, gameAreaWidth, gameAreaHeight);
 	stage.addChild(gameArea);
 
 	createjs.Ticker.addEventListener("tick", handleTick);
