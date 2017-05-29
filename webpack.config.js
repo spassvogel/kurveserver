@@ -16,7 +16,7 @@ const settings = {
         publicPath: "/",
         path: path.resolve("build")
     },
-    debug: true,
+    //debug: true,
     devtool: 'inline-source-map',
     resolve: {
         extensions: [".js", ".json", ".css"]

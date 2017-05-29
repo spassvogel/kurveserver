@@ -16,12 +16,13 @@ export default class Player {
     _rotation = Math.PI / 2;
     _openDist = 0;
 
+    alive = true;
+    name = null;
 	midPoint = null;
     prevPos = null;
     prevMidPoint = null;
 
     controller = new KeyboardController();
-
 	stroke = 5;
 
     constructor(settings) {
