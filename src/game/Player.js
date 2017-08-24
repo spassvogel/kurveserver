@@ -16,6 +16,7 @@ export default class Player {
     _rotation = Math.PI / 2;
     _openDist = 0;
 
+    ready = true;
     alive = true;
     name = null;
 	midPoint = null;

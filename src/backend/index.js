@@ -3,6 +3,7 @@ import express from 'express';
 
 import http from 'http';
 import SocketIO from 'socket.io';
+import ip from "ip";
 
 const playerData = [];
 const CONTROL_LEFT_UP = 'leftUp';
@@ -15,11 +16,18 @@ const server = http.Server(app);
 const io = new SocketIO(server);
 const port = process.env.PORT || 3000;
 
+let gameInitialized = false;
 
+
+server.listen(port, function(){
+  console.log('listening on *:' + port);
+});
+
+var gameSocket = null;
 io.on('connection', function(socket){
     let playerUID = null;
     console.log('a client connected from ' + socket.request.connection.remoteAddress);
-  
+
     socket.on('disconnect', () => {
         if(playerUID){
             console.log('removed' + playerUID);
@@ -27,16 +35,40 @@ io.on('connection', function(socket){
             removePlayer(playerUID);
             playerUID = null;
         }
+        if(socket == gameSocket){
+            gameSocket = null;
+            console.log('disconnected game');
+            // todo: inform controller clients
+        }
     });
 
+    /** The 'game client' sends this  */
+    socket.on('gameInit', (data, callback) => {
+        console.log('game client connected!');
+        gameInitialized = true;
+
+        gameSocket = socket;
+        socket.on('gameUpdate', (players) => {
+            console.log('game is updated' + JSON.stringify(players))
+        });
+        callback({
+            ip: ip.address()
+        });
+    });
 
     socket.on('addPlayer', (player) => {
-        addPlayer(merge({
+        if (!gameSocket) {
+            console.warn('addPlayer: No game present')
+        }
+        else {
+            gameSocket.emit('addPlayer', player);
+        }
+        
+        /*addPlayer(merge({
             status: 'lobby'
         }, player));
         playerUID = player.uid;
         console.log('added ' + playerUID)
-
 
         // temp
         if(playerData.length == 2){
@@ -48,7 +80,7 @@ io.on('connection', function(socket){
                 update();
 
             }, 20);
-        }
+        }*/
     });
 
     socket.on('control', (action) => {
@@ -79,7 +111,4 @@ function removePlayer(playerUID) {
 }
 
 
-server.listen(port, function(){
-  console.log('listening on *:' + port);
-});
 
